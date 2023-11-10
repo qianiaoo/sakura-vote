@@ -65,7 +65,7 @@ export default function Home() {
       await addDoc(collection(db, "users"), {
         name: me.name.trim(),
         cosplay: me.cosplay.trim(),
-        roomId: me.roomId.trim(),
+        roomId: me.roomId.toUpperCase().trim(),
         introduction: me.introduction.trim(),
         youtube: me.youtube.trim(),
       })

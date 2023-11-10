@@ -85,7 +85,7 @@ const UserPicker = ({ question, onDecide, buttonText }: UserPickerProps) => {
               onClick={onDecideUser}
               isDisabled={selectUser === null}
             >
-              {selectUser?.name + "に"}決めた！
+              {selectUser && `${selectUser?.name}に`}決めた！
             </Button>
           </DrawerFooter>
         </DrawerContent>

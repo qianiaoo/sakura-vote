@@ -30,7 +30,7 @@ const UserList = ({
     return (
       u.name?.includes(filter) ||
       u.cosplay?.includes(filter) ||
-      u.roomId?.includes(filter)
+      u.roomId?.includes(filter.toUpperCase())
     );
   });
   console.log(filtedUsers, "filtedUsers");
@@ -59,35 +59,40 @@ const UserList = ({
   }, []);
 
   return (
-    <SimpleGrid columns={2} p={0} m={2} gap={2}>
-      {filtedUsers.map((user) => (
-        <Card
-          key={user.id}
-          onClick={() => {
-            setSelectedUser(user);
-            onDecide(user);
-          }}
-          bg={user.id === selectedUser?.id ? "gray.100" : "white"}
-        >
-          <CardHeader p={3}>
-            <Heading size="md">{user.cosplay}</Heading>
-          </CardHeader>
+    <Box>
+      <Heading size="xs" p={2}>
+        今受付人数: {users.length}人
+      </Heading>
+      <SimpleGrid columns={2} p={0} m={2} gap={2}>
+        {filtedUsers.map((user) => (
+          <Card
+            key={user.id}
+            onClick={() => {
+              setSelectedUser(user);
+              onDecide(user);
+            }}
+            bg={user.id === selectedUser?.id ? "gray.100" : "white"}
+          >
+            <CardHeader p={3}>
+              <Heading size="md">{user.cosplay}</Heading>
+            </CardHeader>
 
-          <CardBody>
-            <Stack divider={<StackDivider />} spacing="4">
-              <Box>
-                <Heading size="xs" textTransform="uppercase">
-                  {user.name} - {user.roomId}
-                </Heading>
-                <Text pt="2" fontSize="sm">
-                  {user.introduction}
-                </Text>
-              </Box>
-            </Stack>
-          </CardBody>
-        </Card>
-      ))}
-    </SimpleGrid>
+            <CardBody>
+              <Stack divider={<StackDivider />} spacing="4">
+                <Box>
+                  <Heading size="xs" textTransform="uppercase">
+                    {user.name} - {user.roomId}
+                  </Heading>
+                  <Text pt="2" fontSize="sm">
+                    {user.introduction}
+                  </Text>
+                </Box>
+              </Stack>
+            </CardBody>
+          </Card>
+        ))}
+      </SimpleGrid>
+    </Box>
   );
 };
 
