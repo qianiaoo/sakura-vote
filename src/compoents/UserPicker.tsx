@@ -42,11 +42,11 @@ const UserPicker = ({ question, onDecide, buttonText }: UserPickerProps) => {
   };
 
   return (
-    <div>
+    <Flex direction="row-reverse">
       <Button
         ref={btnRef}
-        colorScheme="red"
-        leftIcon={<AiFillHeart />}
+        colorScheme={question.color}
+        leftIcon={question.icon}
         onClick={onOpen}
       >
         {buttonText}
@@ -90,7 +90,7 @@ const UserPicker = ({ question, onDecide, buttonText }: UserPickerProps) => {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-    </div>
+    </Flex>
   );
 };
 
