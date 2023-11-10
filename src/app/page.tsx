@@ -9,7 +9,16 @@ import {
   useToast,
   Text,
   VStack,
-  Card, Box, CardHeader, CardBody, StackDivider,
+  Card,
+  Box,
+  CardHeader,
+  CardBody,
+  StackDivider,
+  Textarea,
+  Grid,
+  SimpleGrid,
+  AccordionButton,
+  Accordion,
 } from "@chakra-ui/react";
 import { FormEvent, useEffect, useState } from "react";
 import {
@@ -23,13 +32,16 @@ import {
   doc,
 } from "firebase/firestore";
 import { db } from "./firebase";
+import { useRouter } from "next/navigation";
+import UserList from "@/compoents/UserList";
 
-type User = {
+export type User = {
   name: string;
   roomId: string;
   cosplay: string;
   youtube: string;
   id: string;
+  introduction: string;
 };
 
 export default function Home() {
@@ -38,22 +50,24 @@ export default function Home() {
     name: "",
     roomId: "",
     cosplay: "",
+    introduction: "",
     youtube: "",
   });
-  const [users, setUsers] = useState<User[]>([]);
   const [isDisplayYoutube, setIsDisplayYoutube] = useState(false);
   const toast = useToast();
-
+  const router = useRouter();
   const addItem = async () => {
     console.log("addItem");
-    if (!me.name && !me.roomId) {
+    console.log(!me.name && !me.roomId, "me", me);
+    if (!!me.name && !!me.roomId) {
       // setItems([...items, newItem]);
       console.log(db, "db");
       await addDoc(collection(db, "users"), {
         name: me.name.trim(),
-        price: me.roomId.trim(),
         cosplay: me.cosplay.trim(),
-        request: me.youtube.trim(),
+        roomId: me.roomId.trim(),
+        introduction: me.introduction.trim(),
+        youtube: me.youtube.trim(),
       })
         .then((docRef) => {
           toast({
@@ -63,6 +77,7 @@ export default function Home() {
             duration: 5000,
             isClosable: true,
           });
+          router.refresh();
           console.log("Document written with ID: ", docRef.id);
         })
         .catch((error) => {
@@ -78,25 +93,6 @@ export default function Home() {
     }
   };
 
-  // Read users from database
-  useEffect(() => {
-    const q = query(collection(db, "items"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      let userArr: User[] = [];
-
-      querySnapshot.forEach((doc) => {
-        console.log(doc.data());
-        userArr.push({
-          ...doc.data(),
-          id: doc.id,
-        } as User);
-      });
-      setUsers(userArr);
-
-      return () => unsubscribe();
-    });
-  }, []);
-
   return (
     <main>
       <Stack p={8} gap={5}>
@@ -105,6 +101,7 @@ export default function Home() {
           こんばんは！
         </Heading>
         <Stack>
+          {me.introduction}
           <Input
             placeholder="部屋番号 / Room Id"
             onChange={(event) => setMe({ ...me, roomId: event.target.value })}
@@ -117,24 +114,32 @@ export default function Home() {
             placeholder="コスプレ / Cosplay"
             onChange={(e) => setMe({ ...me, cosplay: e.target.value })}
           />
-          <Text mt={10} fontSize="sm">
-            アピールタイムにもしBGMが必要であればここにYoutubeのLinkを入れてください。
-            <br />
-            If you need BGM during the appeal time, please insert a YouTube link
-            here.
-          </Text>
+          <Textarea
+            onChange={(e) => setMe({ ...me, introduction: e.target.value })}
+            placeholder="一言 / One word"
+            size="sm"
+          />
           <Button
             colorScheme="red"
-            onClick={() => setIsDisplayYoutube(!isDisplayYoutube)}
+            onClick={() => setIsDisplayYoutube((prevState) => !prevState)}
           >
             {!isDisplayYoutube ? "I NEED BGM" : "I DON'T NEED BGM"}
           </Button>
+
           {isDisplayYoutube && (
-            <Input
-              placeholder="非必須/Optional：Youtube Link"
-              variant="flushed"
-              onChange={(e) => setMe({ ...me, cosplay: e.target.value })}
-            />
+            <>
+              <Text mt={10} fontSize="sm" border="1px" rounded="10px" p="2">
+                アピールタイムにもしBGMが必要であればここにYoutubeのLinkを入れてください。
+                <br />
+                If you need BGM during the appeal time, please insert a YouTube
+                link here.
+              </Text>
+              <Input
+                placeholder="非必須/Optional：Youtube Link"
+                variant="filled"
+                onChange={(e) => setMe({ ...me, youtube: e.target.value })}
+              />
+            </>
           )}
         </Stack>
         <Button onClick={addItem} colorScheme="whatsapp">
@@ -142,44 +147,7 @@ export default function Home() {
         </Button>
       </Stack>
       {/*  display users list by chakra UI 's card */}
-      <Stack p={8} gap={5}>
-        {users.map((user) => (
-          <Card key={user.id}>
-            <CardHeader>
-              <Heading size="md">Client Report</Heading>
-            </CardHeader>
-
-            <CardBody>
-              <Stack divider={<StackDivider />} spacing="4">
-                <Box>
-                  <Heading size="xs" textTransform="uppercase">
-                    Summary
-                  </Heading>
-                  <Text pt="2" fontSize="sm">
-                    View a summary of all your clients over the last month.
-                  </Text>
-                </Box>
-                <Box>
-                  <Heading size="xs" textTransform="uppercase">
-                    Overview
-                  </Heading>
-                  <Text pt="2" fontSize="sm">
-                    Check out the overview of your clients.
-                  </Text>
-                </Box>
-                <Box>
-                  <Heading size="xs" textTransform="uppercase">
-                    Analysis
-                  </Heading>
-                  <Text pt="2" fontSize="sm">
-                    See a detailed analysis of all your business clients.
-                  </Text>
-                </Box>
-              </Stack>
-            </CardBody>
-          </Card>
-        ))}
-      </Stack>
+      <UserList />
     </main>
   );
 }
