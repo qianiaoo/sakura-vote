@@ -96,12 +96,12 @@ const VotePage = () => {
       // setItems([...items, newItem]);
       console.log(db, "db");
       await addDoc(collection(db, "votes"), {
-        first: answerList[0]?.id,
-        second: answerList[1]?.id,
-        third: answerList[2]?.id,
-        fourth: answerList[3]?.id,
-        fifth: answerList[4]?.id,
-        sixth: answerList[5]?.id,
+        0: answerList[0]?.id,
+        1: answerList[1]?.id,
+        2: answerList[2]?.id,
+        3: answerList[3]?.id,
+        4: answerList[4]?.id,
+        5: answerList[5]?.id,
       })
         .then((docRef) => {
           toast({
