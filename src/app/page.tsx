@@ -103,7 +103,7 @@ export default function Home() {
         <Stack>
           {me.introduction}
           <Input
-            placeholder="部屋番号 / Room Id"
+            placeholder="部屋かチーム名 / Room or Team"
             onChange={(event) => setMe({ ...me, roomId: event.target.value })}
           />
           <Input

@@ -75,7 +75,7 @@ const questionList: Question[] = [
   },
   {
     id: 5,
-    jp: "至高最高至極絶対無敵賞",
+    jp: "最高賞",
     en: "Who is the best?",
     icon: <GiQueenCrown />,
     color: "purple",
