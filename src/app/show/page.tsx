@@ -9,6 +9,7 @@ import {
   Button,
   Center,
   Heading,
+  Link,
   Slider,
   SliderFilledTrack,
   SliderThumb,
@@ -71,10 +72,7 @@ const ShowPage = () => {
       <VStack bg="white" p={20} boxShadow="inner" shadow="10px" rounded="md">
         <Box>
           {users.length > 0 && users[cursor] !== undefined && (
-            <VStack
-              onClick={() => setCursor((prevState) => prevState + 1)}
-              as="button"
-            >
+            <VStack>
               <Heading size="4xl">{users[cursor].cosplay}</Heading>
               <Heading size="2xl">{users[cursor].name}</Heading>
               <Heading size="xl">{users[cursor].roomId}</Heading>
@@ -82,12 +80,16 @@ const ShowPage = () => {
                 {users[cursor].introduction}
               </Heading>
               {users[cursor].youtube && (
-                <Button colorScheme="red">
-                  <a href={users[cursor].youtube} target="_blank">
-                    <Text>BGM</Text>
-                  </a>
-                </Button>
+                <Link href={users[cursor].youtube} isExternal>
+                  BGM
+                </Link>
               )}
+              <Button
+                onClick={() => setCursor((prevState) => prevState + 1)}
+                as="button"
+              >
+                NEXT
+              </Button>
               <Heading size="xs">{cursor + 1}人目</Heading>
             </VStack>
           )}
